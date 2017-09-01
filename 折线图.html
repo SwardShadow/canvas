@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>折线图</title>
+  <style>
+    canvas {
+      border: 1px solid #ccc;
+      margin: 0 auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<canvas width="600" height="400"></canvas>
+<script type="text/javascript">
+  //模拟后台数据
+  var data = [
+    {x: 100, y: 80},
+    {x: 200, y: 120},
+    {x: 300, y: 250},
+    {x: 400, y: 340},
+    {x: 500, y: 230}
+  ];
+  var PointChart = function () {
+    //绘制工具
+    this.ctx = document.querySelector("canvas").getContext("2d");
+    //原点坐标
+    this.space = 20;
+    this.width = this.ctx.canvas.width;
+    this.height = this.ctx.canvas.height;
+    this.x0 = this.space;
+    this.y0 = this.height - this.space;
+    //箭头的带下
+    this.arrow = 10;
+    //点的大小
+    this.point = 10;
+  }
+
+  //初始化方法
+  PointChart.prototype.init = function (data) {
+    this.drawLines();
+    this.drawPoints(data);
+  }
+  //绘制坐标轴
+  PointChart.prototype.drawLines = function () {
+    //X轴
+    this.ctx.moveTo(this.x0, this.y0);
+    /*确定坐标的时候由于找的是根据坐标为中心的区域，所以我们需要画一个正方形，正方形的中心正好是我们需要的坐标。*/
+    this.ctx.lineTo(this.width - this.space, this.y0);
+    this.ctx.lineTo(this.width - this.space - this.arrow, this.y0 + this.arrow / 2);
+    this.ctx.lineTo(this.width - this.space - this.arrow, this.y0 - this.arrow / 2);
+    this.ctx.lineTo(this.width - this.space, this.y0);
+    this.ctx.stroke();
+    this.ctx.fill();
+    //Y轴
+    this.ctx.moveTo(this.x0, this.y0);
+    this.ctx.lineTo(this.space, this.space);
+    this.ctx.lineTo(this.space + this.arrow / 2, this.space + this.arrow);
+    this.ctx.lineTo(this.space - this.arrow / 2, this.space + this.arrow);
+    this.ctx.lineTo(this.space, this.space);
+    this.ctx.stroke();
+    this.ctx.fill();
+  }
+
+  //转换点坐标
+  PointChart.prototype.formatDot = function (data) {
+    var that = this;
+    var canvasData = [];
+    data.forEach(function (item, i) {
+      var cx = item.x + that.x0;
+      var cy = that.y0 - item.y;
+      canvasData.push({x: cx, y: cy});
+    });
+    return canvasData;
+  }
+  //绘制多个点
+  PointChart.prototype.drawPoints = function (data) {
+    var that = this;
+    //装换
+    var canvasData = this.formatDot(data);
+    console.log(canvasData);
+    canvasData.forEach(function (item, i) {
+      that.ctx.beginPath();
+      that.ctx.moveTo(item.x - that.point / 2, item.y - that.point / 2);
+      that.ctx.lineTo(item.x + that.point / 2, item.y - that.point / 2);
+      that.ctx.lineTo(item.x + that.point / 2, item.y +  that.point / 2);
+      that.ctx.lineTo(item.x - that.point / 2, item.y + that.point / 2);
+      //这里手动还是自动闭合没有区别
+      that.ctx.closePath();
+      that.ctx.fill();
+
+      that.ctx.beginPath();
+      if (i == 0) {
+        that.ctx.moveTo(that.x0, that.y0);
+      } else {
+        that.ctx.moveTo(canvasData[i - 1].x, canvasData[i - 1].y);
+      }
+      that.ctx.lineTo(item.x, item.y);
+      that.ctx.stroke();
+    });
+  }
+  new PointChart().init(data);
+</script>
+</body>
+</html>

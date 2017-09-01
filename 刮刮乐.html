@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Crops</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    canvas {
+      border: 1px solid #cccccc;
+      background-color: #cccccc;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<canvas height="360" width="640"></canvas>
+<script type="text/javascript">
+  var canvas = document.querySelector("canvas");
+  var ctx = canvas.getContext("2d");
+  var img = new Image();
+  img.onload = function () {
+    //填充方案
+    var pat = ctx.createPattern(img, "no-repeat");
+    //图片描边
+    ctx.strokeStyle = pat;
+    //设置线的样式
+    ctx.lineWidth = 25;
+    //画笔的点是一个圆来提高用户体验
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    var isDown = false;
+    ctx.canvas.addEventListener("mousedown", function (e) {
+      //设置起始坐标
+      ctx.moveTo(e.clientX, e.clientY);
+      isDown = true;
+    })
+    ctx.canvas.addEventListener("mousemove", function (e) {
+      if (isDown) {
+        ctx.lineTo(e.clientX, e.clientY);
+        ctx.stroke();
+      }
+    })
+    ctx.canvas.addEventListener("mouseup", function () {
+      isDown = false;
+    })
+  }
+  img.src = "images/ppx.jpg";
+</script>
+</body>
+</html>

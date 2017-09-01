@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>animation</title>
+  <style>
+    canvas {
+      border: 1px solid #cccccc;
+    }
+  </style>
+</head>
+<body>
+<canvas height="400" width="600"></canvas>
+<script type="text/javascript">
+  /*
+  * 总体要求： 通过键盘上的方向键控制人物的移动
+  * 1. 加载图片
+  * 2. 监听方向键
+  * 3. 绘制人物
+  * */
+  var Per = function () {
+    this.ctx = document.querySelector("canvas").getContext("2d");
+    this.width = this.ctx.canvas.width;
+    this.height = this.ctx.canvas.height;
+    this.stepSize = 10;
+    this.index = 0;
+  }
+  Per.prototype.init = function () {
+    var that = this;
+    that.loadImage(function (img) {
+      that.perWidth = img.width / 4;
+      that.perHeight = img.height / 4;
+      that.startX = that.width / 2 - that.perWidth / 2;
+      that.startY = that.height / 2 - that.perHeight / 2;
+      that.drawPer(img, 0, 0, 0);
+      that.bindEvent(img);
+    })
+  }
+  //图片加载
+  Per.prototype.loadImage = function (callback) {
+    var img = new Image();
+    img.onload = function () {
+      //完成其他业务
+      callback && callback(img);
+    }
+    img.src = "images/03.png";
+  }
+  //事件绑定
+  Per.prototype.bindEvent = function (img) {
+    var that = this;
+    //按照编码顺序，左上右下37 38 39 40
+    //index为0 1 2 3
+    var direction = 0;
+    var stepX = 0;
+    var stepY = 0;
+    document.addEventListener("keydown", function (e) {
+      switch (e.keyCode) {
+        case 37:
+          //左
+          stepX--;
+          direction = 1;
+          if (that.startX + (stepX * that.stepSize) < 0) {
+            direction = 2;
+            stepX++;
+          }
+          break;
+        case 38:
+          //上
+          stepY--;
+          direction = 3
+          if (that.startY + (stepY * that.stepSize) < 0) {
+            direction = 0;
+            stepY++;
+          }
+          break;
+        case 39:
+          //右
+          stepX++;
+          direction = 2;
+          if (that.startX + (stepX * that.stepSize) > (that.width - that.perWidth)) {
+            direction = 1;
+            stepX--;
+          }
+          break;
+        case 40:
+          //下
+          stepY++;
+          direction = 0;
+          if (that.startY + (stepY * that.stepSize) > (that.height - that.perHeight)) {
+            direction = 3;
+            stepY--;
+          }
+          break;
+      }
+      that.index++;
+      //绘制
+      that.drawPer(img, stepX, stepY, direction);
+    })
+  }
+  //绘制人物
+  Per.prototype.drawPer = function (img, stepX, stepY, direction) {
+    //清空
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    if (this.index > 3) {
+      this.index = 0;
+    }
+    //绘制
+    this.ctx.drawImage(img, this.perWidth * this.index, direction * this.perHeight, this.perWidth, this.perHeight, this.startX + (stepX * this.stepSize), this.startY + (stepY * this.stepSize), this.perWidth, this.perHeight);
+  }
+  new Per().init();
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Circle</title>
+  <style>
+    canvas {
+      border: 2px dashed red;
+    }
+  </style>
+</head>
+<body>
+<canvas width="600" height="400"></canvas>
+<script type="text/javascript">
+  //获取元素画布，设置画布属性
+  var canvas = document.querySelector("canvas");
+  var ctx = canvas.getContext("2d");
+  //获取当前的原点坐标
+  var x0 = ctx.canvas.width / 2;
+  var y0 = ctx.canvas.height / 2;
+  //获取随机的颜色
+  var getRandomColor = function () {
+    var r = Math.floor(Math.random() * 256);
+    var g = Math.floor(Math.random() * 256);
+    var b = Math.floor(Math.random() * 256);
+    return "rgb(" + r + "," + g + "," + b + ")";
+  }
+  //设置定时器，使圆颜色定时改变
+  setInterval(function () {
+    //把圆分成n等分
+    var n = 12;
+    //起始弧度
+    var startAngle = 0;
+    for (var i = 0; i < n; i++) {
+      ctx.beginPath();
+      //起始位置移动中心点
+      ctx.moveTo(x0, y0);
+      ctx.arc(x0, y0, 150, startAngle, startAngle + 2 * Math.PI / n);
+      //填充随机的颜色
+      ctx.fillStyle = getRandomColor();
+      ctx.fill();
+      startAngle = startAngle + 2 * Math.PI / n;
+    }
+  }, 500);
+</script>
+</body>
+</html>

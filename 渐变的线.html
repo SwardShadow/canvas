@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>渐变的线</title>
+  <style>
+    canvas {
+      border: 1px solid black;
+      margin: 0 auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<canvas width="600" height="400"></canvas>
+<!--通过javascript来达到绘图效果-->
+<script type="text/javascript">
+  var canvas = document.querySelector("canvas");
+  //获取绘图工具
+  var ctx = canvas.getContext('2d');
+  //要求：从左到右，起始颜色为蓝色，结束颜色为白色
+  ctx.lineWidth = 10;
+  ctx.moveTo(100, 100);
+  ctx.lineTo(200, 100);
+  ctx.lineCap = "round";
+  for (var i = 0; i < 255; i++) {
+    //这里画笔也要拿进来，不然的话画出来的都会覆盖之前的
+    ctx.beginPath();
+    //99是起始点，100是终止点
+    ctx.moveTo(99 + i, 100);
+    ctx.lineTo(100 + i, 100);
+    var r = 255 - i;
+    var b = 255 - i;
+    ctx.strokeStyle = "rgb(" + r + ",255," + b + ")";
+    ctx.stroke();
+  }
+  for (var i = 0; i < 255; i++) {
+    ctx.beginPath();
+    ctx.moveTo(99 + i, 200);
+    ctx.lineTo(100 + i, 200);
+    var g = 255 - i;
+    var b = 255 - i;
+    ctx.strokeStyle = "rgb(255," + g + "," + b + ")";
+    ctx.stroke();
+  }
+  for (var i = 0; i < 255; i++) {
+    ctx.beginPath();
+    ctx.moveTo(99 + i, 300);
+    ctx.lineTo(100 + i, 300);
+    var r = 255 - i;
+    var g = 255 - i;
+    ctx.strokeStyle = "rgb(" + r + "," + g + ",255)";
+    ctx.stroke();
+  }
+
+  function changeColor(x,y,z,h,r,g,b) {
+    var canvas = document.querySelector("canvas");
+    var ctx = canvas.getContext('2d');
+    ctx.lineWidth = 10;
+    ctx.moveTo(x, y);
+    ctx.lineTo(z, h);
+    ctx.lineCap = "round";
+    for(var i=0; i<255; i++){
+        ctx.beginPath();
+        ctx.moveTo((x-1)+i,y);
+        ctx.lineTo(x+i,y);
+        ctx.strokeStyle="rgb("+r+","+g+","+b+")";
+        ctx.stroke();
+    }
+  }
+</script>
+</body>
+</html>
